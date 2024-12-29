@@ -8,10 +8,13 @@
 import SwiftUI
 
 @main
-struct SandSoundGameApp: App {
+struct SandSoundApp: App {
+    @StateObject var gameViewModel = GameViewModel(gameDuration: 20, gameMode: .game)
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreen()
+                .environmentObject(gameViewModel)
+                .preferredColorScheme(.dark)
         }
     }
 }
