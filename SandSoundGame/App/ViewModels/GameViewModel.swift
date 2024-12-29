@@ -255,7 +255,10 @@ func handleSwipe(direction: SwipeDirection) {
     
     switch direction {
     case .left:
-        if currentLane > 0 {
+        if currentLane == 0 {
+                    notificationFeedback(type: .error)
+         }
+        else if currentLane > 0 {
             currentLane -= 1
             if soundManager.obstaclePlayer != nil {
                 if soundManager.obstaclePlayer!.isPlaying {
@@ -268,11 +271,15 @@ func handleSwipe(direction: SwipeDirection) {
                     hideArrows("left")
                     soundManager.stopSound(for: &soundManager.obstaclePlayer)
                     resumeGameTimer()
+                    notificationFeedback(type: .success)
                 }
             }
         }
     case .right:
-        if currentLane < 2 {
+        if currentLane == 2 {
+            notificationFeedback(type: .error)
+        }
+        else if currentLane < 2 {
             currentLane += 1
             if soundManager.obstaclePlayer != nil {
                 if soundManager.obstaclePlayer!.isPlaying {
@@ -286,6 +293,7 @@ func handleSwipe(direction: SwipeDirection) {
                 hideArrows("right")
                 soundManager.stopSound(for: &soundManager.obstaclePlayer)
                 resumeGameTimer()
+                notificationFeedback(type: .success)
             }
         }
     }
@@ -378,5 +386,10 @@ func handleSwipe(direction: SwipeDirection) {
     enum gameMode {
         case tutorial
         case game
+    }
+    
+    func notificationFeedback(type: UINotificationFeedbackGenerator.FeedbackType) {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(type)
     }
 }
