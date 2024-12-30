@@ -1,53 +1,63 @@
 
 import SwiftUI
 struct GameOver: View {
+    @EnvironmentObject var viewModel: GameViewModel
     var body: some View {
         ZStack {
-           
-            Image("GameOver")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-
-            VStack {
-                Spacer() // Push buttons to the bottom
-                
-                HStack {
-                    // Home Button
+            if viewModel.gameOver {
+                VStack {
+                    Spacer().frame(height: 30)
+                    Text("اركض اسرع المرة الجايه ...")
+                        .foregroundColor(.white)
+                        .italic()
+                    Spacer().frame(height: 30)
                     Button(action: {
-                        // Action for Home button
-                        print("Navigating to Home Page")
+                        viewModel.gameOver = false
+                        viewModel.restartGame(backgroundSound: "full-background.mp3")
                     }) {
                         HStack {
-                            Image(systemName: "house.fill") // Home icon
-                            Text(" الرئيسيه")
-                                .font(.headline)
+                            Image(systemName: "arrow.clockwise")
+                            Text("العب مرة ثانية")
                         }
                         .padding()
-                        .background(Color.white.opacity(0.8)) // Button background
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white.opacity(0.09))
+                        .foregroundColor(.white)
                         .cornerRadius(10)
-                        .shadow(radius: 5)
                     }
-                    
-                    Spacer() // Add spacing between buttons
-                    
-                    // Restart Button
-                    Button(action: {
-                        // Action for Restart button
-                        print("Restarting the Game")
-                    }) {
-                        HStack {
-                            Image(systemName: "arrow.clockwise") // Restart icon
-                            Text("اعاده اللعب")
-                                .font(.headline)
-                        }
-                        .padding()
-                        .background(Color.white.opacity(0.8)) // Button background
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                    }
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .bottom
+                    )
                 }
-                .padding([.leading, .trailing, .bottom], 30) // Adjust spacing around the buttons
+                .padding(40)
+                .frame(maxWidth: 400)
+                .background(
+                    Image("gameOver")
+                        .resizable()
+                        .scaledToFill()
+                        .edgesIgnoringSafeArea(.all)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25, style: .continuous)
+                        .stroke(myColors.darkNavy.opacity(0.8), lineWidth: 2)
+                )
+                .shadow(radius: 15)
+                .scaleEffect(1.1)
+                .transition(.opacity.combined(with: .scale))
+                .animation(.spring())
+            }else{
+                Game()
+                    .environmentObject(viewModel)
+                    .onAppear {
+                        // Switch your game mode, start the timer
+                        viewModel.switchMode(
+                            to: .game,
+                            duration: 88,              // example: 60s game
+                            backgroundSound: "full-background.mp3"
+                        )
+                    }
             }
         }
     }
